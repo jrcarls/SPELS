@@ -1,35 +1,30 @@
 import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft, Eye, EyeOff, Gift01 } from '@untitledui/icons'
+import { useForm } from 'react-hook-form'
 import { Button } from '@/components/base/buttons/button'
 import { register } from './authApi'
+import { formatCnpj, signUpSchema } from './authSchemas'
 
 export function SignUpPage() {
-  const [form, setForm] = useState({
-    name: '',
-    organizationName: '',
-    cnpj: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const {
+    register: registerField,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(signUpSchema),
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      name: '', organizationName: '', cnpj: '', email: '', password: '', confirmPassword: '',
+    },
+  })
 
-  function updateField(event) {
-    setForm((current) => ({ ...current, [event.target.name]: event.target.value }))
-  }
-
-  async function handleSubmit(event) {
-    event.preventDefault()
-    setError('')
-
-    if (form.password !== form.confirmPassword) {
-      setError('As senhas não conferem.')
-      return
-    }
-
-    setIsLoading(true)
+  async function onSubmit(form) {
+    setSubmitError('')
     try {
       await register({
         name: form.name,
@@ -40,9 +35,7 @@ export function SignUpPage() {
       })
       window.location.assign('/dashboard')
     } catch (err) {
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
+      setSubmitError(err.message)
     }
   }
 
@@ -79,41 +72,46 @@ export function SignUpPage() {
               <p className="mt-2 text-sm text-text-secondary">Seu período de teste começa assim que a conta for criada.</p>
             </header>
 
-            <form className="space-y-5" onSubmit={handleSubmit} noValidate>
+            <form className="space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
               <div className="grid gap-5 sm:grid-cols-2">
-                <Field label="Seu nome" name="name" value={form.name} onChange={updateField} placeholder="Seu nome" autoComplete="name" required />
-                <Field label="Nome da confeitaria" name="organizationName" value={form.organizationName} onChange={updateField} placeholder="Ex.: Doce & Cia" required />
+                <Field label="Seu nome" placeholder="Seu nome" autoComplete="name" error={errors.name?.message} inputProps={registerField('name')} />
+                <Field label="Nome da confeitaria" placeholder="Ex.: Doce & Cia" error={errors.organizationName?.message} inputProps={registerField('organizationName')} />
               </div>
 
-              <Field label="CNPJ (opcional)" name="cnpj" value={form.cnpj} onChange={updateField} placeholder="00.000.000/E08G-12" />
-              <Field label="E-mail" name="email" type="email" value={form.email} onChange={updateField} placeholder="voce@confeitaria.com" autoComplete="email" required />
+              <Field
+                label="CNPJ (opcional)"
+                placeholder="00.000.000/E08G-12"
+                inputMode="text"
+                error={errors.cnpj?.message}
+                inputProps={registerField('cnpj')}
+                onChange={(event) => setValue('cnpj', formatCnpj(event.target.value), { shouldDirty: true, shouldValidate: true })}
+              />
+              <Field label="E-mail" type="email" placeholder="voce@confeitaria.com" autoComplete="email" error={errors.email?.message} inputProps={registerField('email')} />
 
               <label className="block">
                 <span className="mb-1.5 block text-sm font-medium text-text-secondary">Senha</span>
                 <span className="relative block">
                   <input
-                    name="password"
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
-                    value={form.password}
-                    onChange={updateField}
                     placeholder="Pelo menos 8 caracteres"
-                    minLength="8"
-                    required
-                    className={inputClassName(true)}
+                    aria-invalid={Boolean(errors.password)}
+                    {...registerField('password')}
+                    className={inputClassName(true, errors.password)}
                   />
                   <button type="button" onClick={() => setShowPassword((visible) => !visible)} className="absolute inset-y-0 right-0 grid w-11 place-items-center text-text-tertiary hover:text-text-secondary" aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}>
                     {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
                   </button>
                 </span>
+                <FieldError message={errors.password?.message} />
               </label>
 
-              <Field label="Confirmar senha" name="confirmPassword" type={showPassword ? 'text' : 'password'} value={form.confirmPassword} onChange={updateField} placeholder="Repita sua senha" autoComplete="new-password" minLength="8" required />
+              <Field label="Confirmar senha" type={showPassword ? 'text' : 'password'} placeholder="Repita sua senha" autoComplete="new-password" error={errors.confirmPassword?.message} inputProps={registerField('confirmPassword')} />
 
-              {error && <p role="alert" className="rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-700">{error}</p>}
+              {submitError && <p role="alert" className="rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-700">{submitError}</p>}
 
-              <Button type="submit" className="w-full" isDisabled={isLoading}>
-                {isLoading ? 'Criando conta...' : 'Criar conta'}
+              <Button type="submit" className="w-full" isDisabled={isSubmitting}>
+                {isSubmitting ? 'Criando conta...' : 'Criar conta'}
               </Button>
             </form>
 
@@ -125,25 +123,30 @@ export function SignUpPage() {
   )
 }
 
-function Field({ label, name, type = 'text', value, onChange, placeholder, autoComplete, minLength, required }) {
+function Field({ label, type = 'text', placeholder, autoComplete, inputMode, error, inputProps, onChange }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-sm font-medium text-text-secondary">{label}</span>
       <input
-        name={name}
         type={type}
-        value={value}
-        onChange={onChange}
         placeholder={placeholder}
         autoComplete={autoComplete}
-        minLength={minLength}
-        required={required}
-        className={inputClassName()}
+        inputMode={inputMode}
+        aria-invalid={Boolean(error)}
+        {...inputProps}
+        onChange={onChange}
+        className={inputClassName(false, error)}
       />
+      <FieldError message={error} />
     </label>
   )
 }
 
-function inputClassName(hasIcon = false) {
-  return `h-11 w-full rounded-lg border border-border-primary bg-bg-primary py-2 text-sm text-text-primary outline-none transition placeholder:text-gray-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-100 ${hasIcon ? 'pl-3.5 pr-11' : 'px-3.5'}`
+function FieldError({ message }) {
+  return message ? <span role="alert" className="mt-1.5 block text-sm text-red-600">{message}</span> : null
+}
+
+function inputClassName(hasIcon = false, error) {
+  const borderColor = error ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : 'border-border-primary focus:border-brand-500 focus:ring-brand-100'
+  return `h-11 w-full rounded-lg border bg-bg-primary py-2 text-sm text-text-primary outline-none transition placeholder:text-gray-400 focus:ring-4 ${borderColor} ${hasIcon ? 'pl-3.5 pr-11' : 'px-3.5'}`
 }
