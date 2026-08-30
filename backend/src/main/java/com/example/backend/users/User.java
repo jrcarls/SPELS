@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
 @Entity
@@ -24,8 +26,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, length = 30)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 30)
+    private PlatformRole platformRole;
 
     @Column(nullable = false)
     private boolean active = true;
@@ -37,7 +40,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = "USER";
+        this.platformRole = PlatformRole.USER;
         this.active = true;
     }
 
@@ -45,11 +48,11 @@ public class User {
     public String getName() { return name; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }
-    public String getRole() { return role; }
+    public PlatformRole getPlatformRole() { return platformRole; }
     public boolean isActive() { return active; }
     public void setName(String name) { this.name = name; }
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }
-    public void setRole(String role) { this.role = role; }
+    public void setPlatformRole(PlatformRole platformRole) { this.platformRole = platformRole; }
     public void setActive(boolean active) { this.active = active; }
 }

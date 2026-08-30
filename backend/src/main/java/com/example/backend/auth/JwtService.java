@@ -1,6 +1,7 @@
 package com.example.backend.auth;
 
 import com.example.backend.users.User;
+import com.example.backend.organizations.OrganizationMember;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -24,12 +25,14 @@ public class JwtService {
         this.expiration = expiration;
     }
 
-    public String generateToken(User user) {
+    public String generateToken(User user, OrganizationMember membership) {
         Date now = new Date();
         return Jwts.builder()
                 .subject(user.getEmail())
                 .claim("userId", user.getId())
-                .claim("role", user.getRole())
+                .claim("organizationId", membership.getOrganization().getId())
+                .claim("tenantRole", membership.getRole().name())
+                .claim("platformRole", user.getPlatformRole().name())
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + expiration))
                 .signWith(key)

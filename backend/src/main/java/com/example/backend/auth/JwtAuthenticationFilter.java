@@ -1,6 +1,10 @@
 package com.example.backend.auth;
 
 import com.example.backend.users.UserRepository;
+import com.example.backend.organizations.OrganizationMember;
+import com.example.backend.organizations.OrganizationMemberRepository;
+import com.example.backend.subscriptions.SubscriptionService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,33 +21,52 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final OrganizationMemberRepository organizationMemberRepository;
+    private final SubscriptionService subscriptionService;
+    private final TenantContext tenantContext;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserRepository userRepository,
+                                   OrganizationMemberRepository organizationMemberRepository,
+                                   SubscriptionService subscriptionService, TenantContext tenantContext) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
+        this.organizationMemberRepository = organizationMemberRepository;
+        this.subscriptionService = subscriptionService;
+        this.tenantContext = tenantContext;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer ")) {
+        try {
+            String header = request.getHeader("Authorization");
+            if (header != null && header.startsWith("Bearer ")
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
+                String token = header.substring(7);
+                if (jwtService.isValid(token)) {
+                    Claims claims = jwtService.extractClaims(token);
+                    Long organizationId = claims.get("organizationId", Number.class).longValue();
+                    userRepository.findByEmail(claims.getSubject())
+                            .filter(user -> user.isActive())
+                            .flatMap(user -> organizationMemberRepository
+                                    .findFirstByUserIdAndOrganizationIdAndActiveTrue(user.getId(), organizationId)
+                                    .filter(member -> member.getOrganization().isActive()))
+                            .filter(member -> subscriptionService.hasAccess(organizationId))
+                            .ifPresent(member -> authenticate(member, organizationId));
+                }
+            }
             filterChain.doFilter(request, response);
-            return;
+        } finally {
+            tenantContext.clear();
         }
+    }
 
-        String token = header.substring(7);
-        if (jwtService.isValid(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            String email = jwtService.extractClaims(token).getSubject();
-            userRepository.findByEmail(email)
-                    .filter(user -> user.isActive())
-                    .ifPresent(user -> {
-                        var authentication = new UsernamePasswordAuthenticationToken(
-                                user.getEmail(), null,
-                                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    });
-        }
-        filterChain.doFilter(request, response);
+    private void authenticate(OrganizationMember member, Long organizationId) {
+        var authentication = new UsernamePasswordAuthenticationToken(member.getUser().getEmail(), null,
+                List.of(
+                        new SimpleGrantedAuthority("ROLE_" + member.getRole().name()),
+                        new SimpleGrantedAuthority("ROLE_" + member.getUser().getPlatformRole().name())));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        tenantContext.setOrganizationId(organizationId);
     }
 }
