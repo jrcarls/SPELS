@@ -27,8 +27,8 @@ export function LoginPage() {
 
   return (
     <main className="min-h-svh bg-bg-secondary p-4 sm:p-8">
-      <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-7xl overflow-hidden rounded-2xl bg-bg-primary shadow-xl shadow-gray-900/8 sm:min-h-[calc(100svh-4rem)] lg:grid-cols-[1.08fr_0.92fr]">
-        <section className="flex items-center justify-center px-6 py-12 sm:px-12 lg:px-20">
+      <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-7xl overflow-hidden rounded-2xl bg-bg-primary shadow-xl shadow-gray-900/8 sm:min-h-[calc(100svh-4rem)] md:grid-cols-[1.08fr_0.92fr]">
+        <section className="flex items-center justify-center px-6 py-12 sm:px-12 md:px-14 lg:px-20">
           <div className="w-full max-w-sm">
             <div className="mb-10 flex items-center gap-3">
               <div className="grid size-10 place-items-center rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-600/25">
@@ -96,12 +96,12 @@ export function LoginPage() {
 
             <p className="mt-8 text-center text-sm text-text-secondary">
               Ainda não tem uma conta?{' '}
-              <button type="button" className="font-semibold text-brand-700 hover:text-brand-800">Crie sua confeitaria</button>
+              <a href="/signup" className="font-semibold text-brand-700 hover:text-brand-800">Crie sua confeitaria</a>
             </p>
           </div>
         </section>
 
-        <aside className="relative hidden overflow-hidden bg-gray-900 p-12 text-white lg:flex lg:flex-col lg:justify-between">
+        <aside className="relative hidden overflow-hidden bg-gray-900 p-10 text-white md:flex md:flex-col md:justify-between lg:p-12">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_22%,rgba(158,119,237,0.52),transparent_28%),radial-gradient(circle_at_10%_90%,rgba(255,255,255,0.12),transparent_30%)]" />
           <div className="relative max-w-md">
             <p className="text-3xl font-semibold leading-tight tracking-tight">Sua operação, mais doce e organizada.</p>
