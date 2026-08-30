@@ -50,7 +50,7 @@ class BackendApplicationTests {
 				.content("{\"name\":\"Jean\",\"organizationName\":\"Confeitaria Jean\",\"cnpj\":\"12.345.678/0001-99\",\"email\":\"jean@example.com\",\"password\":\"password123\"}"))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.accessToken").isNotEmpty())
-				.andExpect(jsonPath("$.organizationId").isNumber())
+				.andExpect(jsonPath("$.organizationId").isString())
 				.andReturn().getResponse().getContentAsString();
 
 		String token = response.replaceFirst(".*\\\"accessToken\\\":\\\"([^\\\"]+)\\\".*", "$1");
@@ -86,7 +86,7 @@ class BackendApplicationTests {
 		user.setPlatformRole(com.example.backend.users.PlatformRole.ADMIN);
 		userRepository.save(user);
 
-		mockMvc.perform(patch("/admin/users/{id}/status", user.getId())
+		mockMvc.perform(patch("/admin/users/{id}/status", user.getPublicId())
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("Authorization", "Bearer " + token)
 				.content("{\"active\":false}"))

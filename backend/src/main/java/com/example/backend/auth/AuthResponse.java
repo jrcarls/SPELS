@@ -1,3 +1,5 @@
 package com.example.backend.auth;
 
-public record AuthResponse(String accessToken, Long organizationId) { }
+import java.util.UUID;
+
+public record AuthResponse(String accessToken, UUID organizationId) { }

@@ -5,7 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.util.UUID;
 
 @Entity
 @Table(name = "organizations")
@@ -13,6 +15,9 @@ public class Organization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "public_id", nullable = false, unique = true, updatable = false)
+    private UUID publicId = UUID.randomUUID();
 
     @Column(nullable = false, length = 120)
     private String name;
@@ -36,6 +41,7 @@ public class Organization {
     }
 
     public Long getId() { return id; }
+    public UUID getPublicId() { return publicId; }
     public String getName() { return name; }
     public String getSlug() { return slug; }
     public String getCnpj() { return cnpj; }
@@ -44,4 +50,11 @@ public class Organization {
     public void setSlug(String slug) { this.slug = slug; }
     public void setCnpj(String cnpj) { this.cnpj = cnpj; }
     public void setActive(boolean active) { this.active = active; }
+
+    @PrePersist
+    private void ensurePublicId() {
+        if (publicId == null) {
+            publicId = UUID.randomUUID();
+        }
+    }
 }

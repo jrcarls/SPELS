@@ -82,7 +82,7 @@ public class AuthService {
     }
 
     private AuthResponse response(User user, OrganizationMember membership) {
-        return new AuthResponse(jwtService.generateToken(user, membership), membership.getOrganization().getId());
+        return new AuthResponse(jwtService.generateToken(user, membership), membership.getOrganization().getPublicId());
     }
 
     private String normalizedEmail(String email) {
