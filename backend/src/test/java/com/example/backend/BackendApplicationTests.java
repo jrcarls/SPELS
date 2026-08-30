@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import jakarta.servlet.http.Cookie;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -45,17 +46,20 @@ class BackendApplicationTests {
 
 	@Test
 	void registersAndUsesTokenToReadCurrentUser() throws Exception {
-		String response = mockMvc.perform(post("/auth/register")
+		var registerResponse = mockMvc.perform(post("/auth/register")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("{\"name\":\"Jean\",\"organizationName\":\"Confeitaria Jean\",\"cnpj\":\"12.345.678/0001-99\",\"email\":\"jean@example.com\",\"password\":\"password123\"}"))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.accessToken").isNotEmpty())
 				.andExpect(jsonPath("$.organizationId").isString())
-				.andReturn().getResponse().getContentAsString();
+				.andReturn().getResponse();
 
-		String token = response.replaceFirst(".*\\\"accessToken\\\":\\\"([^\\\"]+)\\\".*", "$1");
+		Cookie accessTokenCookie = registerResponse.getCookie("ACCESS_TOKEN");
+		Cookie csrfCookie = registerResponse.getCookie("XSRF-TOKEN");
+		org.junit.jupiter.api.Assertions.assertNotNull(accessTokenCookie);
+		org.junit.jupiter.api.Assertions.assertNotNull(csrfCookie);
+		org.junit.jupiter.api.Assertions.assertTrue(accessTokenCookie.isHttpOnly());
 
-		mockMvc.perform(get("/users/me").header("Authorization", "Bearer " + token))
+		mockMvc.perform(get("/users/me").cookie(accessTokenCookie))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.email").value("jean@example.com"))
 				.andExpect(jsonPath("$.active").value(true))
@@ -88,12 +92,19 @@ class BackendApplicationTests {
 
 		mockMvc.perform(patch("/admin/users/{id}/status", user.getPublicId())
 				.contentType(MediaType.APPLICATION_JSON)
-				.header("Authorization", "Bearer " + token)
+				.cookie(accessTokenCookie)
+				.content("{\"active\":false}"))
+				.andExpect(status().isForbidden());
+
+		mockMvc.perform(patch("/admin/users/{id}/status", user.getPublicId())
+				.contentType(MediaType.APPLICATION_JSON)
+				.cookie(accessTokenCookie, csrfCookie)
+				.header("X-XSRF-TOKEN", csrfCookie.getValue())
 				.content("{\"active\":false}"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.active").value(false));
 
-		mockMvc.perform(get("/users/me").header("Authorization", "Bearer " + token))
+		mockMvc.perform(get("/users/me").cookie(accessTokenCookie))
 				.andExpect(status().isUnauthorized());
 	}
 

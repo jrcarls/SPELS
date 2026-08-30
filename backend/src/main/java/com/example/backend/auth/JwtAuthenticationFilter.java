@@ -9,6 +9,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
 import java.io.IOException;
 import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,10 +40,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
-            String header = request.getHeader("Authorization");
-            if (header != null && header.startsWith("Bearer ")
+            String token = extractToken(request);
+            if (token != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
-                String token = header.substring(7);
                 if (jwtService.isValid(token)) {
                     Claims claims = jwtService.extractClaims(token);
                     Long organizationId = claims.get("organizationId", Number.class).longValue();
@@ -59,6 +59,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } finally {
             tenantContext.clear();
         }
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie cookie : cookies) {
+            if (AuthCookieService.ACCESS_TOKEN_COOKIE.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 
     private void authenticate(OrganizationMember member, Long organizationId) {

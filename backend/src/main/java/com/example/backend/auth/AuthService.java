@@ -44,7 +44,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResult register(RegisterRequest request) {
         String email = normalizedEmail(request.email());
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email já cadastrado");
@@ -66,7 +66,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public AuthResponse login(LoginRequest request) {
+    public AuthResult login(LoginRequest request) {
         User user = userRepository.findByEmail(normalizedEmail(request.email()))
                 .orElseThrow(() -> new IllegalArgumentException("Credenciais inválidas"));
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
@@ -81,8 +81,8 @@ public class AuthService {
         return response(user, membership);
     }
 
-    private AuthResponse response(User user, OrganizationMember membership) {
-        return new AuthResponse(jwtService.generateToken(user, membership), membership.getOrganization().getPublicId());
+    private AuthResult response(User user, OrganizationMember membership) {
+        return new AuthResult(jwtService.generateToken(user, membership), membership.getOrganization().getPublicId());
     }
 
     private String normalizedEmail(String email) {
