@@ -1,6 +1,6 @@
 :host { display: block; min-height: 100dvh; }
 .shell { min-height: 100dvh; display: flex; background: var(--spels-page-background); color: var(--spels-text); }
-.sidebar { width: 16.5rem; flex: 0 0 16.5rem; display: flex; flex-direction: column; padding: 1.6rem 1rem 1rem; background: var(--spels-surface); border-right: 1px solid var(--spels-border); }
+.sidebar { position: relative; width: 16.5rem; flex: 0 0 16.5rem; display: flex; flex-direction: column; padding: 1.6rem 1rem 1rem; background: var(--spels-surface); border-right: 1px solid var(--spels-border); }
 .brand { display: flex; align-items: center; gap: .65rem; padding: 0 .8rem 2rem; color: #6f3d42; text-decoration: none; }
 .brand-mark { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: #874d54; color: #fff; font: 600 1.15rem Georgia, serif; }
 .brand-name { font: 600 1.25rem Georgia, serif; letter-spacing: .08em; }
@@ -15,3 +15,20 @@
 @media (max-width: 760px) { .sidebar { display: none; }.topbar { height: 4rem; padding: 0 1.25rem; }.mobile-menu { display: block; }.breadcrumb { margin-left: .5rem; }.topbar-actions { gap: .6rem; }.page-content { padding: 1.5rem 1.25rem 2rem; } }
 
 .shell.dark-theme { background: #211c1b; color: #f4eeeb; }.shell.dark-theme .sidebar, .shell.dark-theme .topbar, .shell.dark-theme .metric-card, .shell.dark-theme .panel, .shell.dark-theme .account-dropdown { background: #2c2524; border-color: #453937; }.shell.dark-theme .content { background: #211c1b; }.shell.dark-theme .organization-switcher, .shell.dark-theme .profile { border-color: #453937; }.shell.dark-theme .welcome-row h1, .shell.dark-theme .metric-card > strong, .shell.dark-theme .panel-header h2, .shell.dark-theme .order-info strong, .shell.dark-theme .order-value, .shell.dark-theme .agenda-day strong, .shell.dark-theme .profile { color: #f4eeeb; }.shell.dark-theme .nav-item, .shell.dark-theme .dropdown-item { color: #cbbdb8; }.shell.dark-theme .nav-item:hover, .shell.dark-theme .nav-item.active, .shell.dark-theme .dropdown-item:hover, .shell.dark-theme .dropdown-item.selected { background: #493336; color: #f1b9b5; }.shell.dark-theme .order-row, .shell.dark-theme .agenda-day, .shell.dark-theme .profile, .shell.dark-theme .dropdown-divider { border-color: #453937; }.shell.dark-theme .help-card { background: #3c2c2c; }.shell.dark-theme .topbar { background: rgba(44,37,36,.85); }.shell.dark-theme .notification span { border-color: #2c2524; }
+
+.brand-row { display: flex; align-items: flex-start; justify-content: space-between; }
+.collapse-button { position: absolute; top: 4.5rem; right: -.9rem; z-index: 6; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; padding: 0; border: 1px solid var(--spels-border); border-radius: 50%; background: var(--spels-surface); color: var(--spels-text-muted); cursor: pointer; box-shadow: 0 2px 8px rgba(74, 50, 46, .1); transform: translateY(-50%); }
+.collapse-button:hover { color: var(--spels-primary); border-color: var(--spels-primary); }
+.collapse-button mat-icon { width: 1.1rem; height: 1.1rem; font-size: 1.1rem; }
+.sidebar-collapsed .sidebar { width: 4.5rem; flex-basis: 4.5rem; padding-left: .65rem; padding-right: .65rem; }
+.sidebar-collapsed .brand-row { justify-content: center; }
+.sidebar-collapsed .brand { padding-left: 0; padding-right: 0; }
+.sidebar-collapsed .brand-name, .sidebar-collapsed .organization-info, .sidebar-collapsed .chevron, .sidebar-collapsed .nav-label, .sidebar-collapsed .nav-item > span:not(.nav-icon), .sidebar-collapsed .help-card, .sidebar-collapsed .profile-details, .sidebar-collapsed .profile-more { display: none; }
+.sidebar-collapsed .collapse-button { right: -.9rem; }
+.sidebar-collapsed .organization-switcher, .sidebar-collapsed .nav-item, .sidebar-collapsed .profile { justify-content: center; }
+.sidebar-collapsed .organization-switcher, .sidebar-collapsed .profile { padding-left: 0; padding-right: 0; }
+.sidebar-collapsed .nav-item { padding-left: 0; padding-right: 0; }
+.sidebar-collapsed .nav-count { display: none; }
+.sidebar-collapsed .profile-menu .account-dropdown { left: 3.9rem; right: auto; bottom: 0; }
+
+@media (max-width: 760px) { .collapse-button { display: none; }.mobile-menu-open .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 10; display: flex; width: min(17rem, 84vw); flex-basis: min(17rem, 84vw); box-shadow: 12px 0 30px rgba(47, 32, 29, .18); }.mobile-menu-open .content { width: 100%; }.mobile-backdrop { position: fixed; inset: 0; z-index: 9; border: 0; background: rgba(42, 29, 27, .35); cursor: pointer; }.mobile-menu-open .brand-name, .mobile-menu-open .organization-info, .mobile-menu-open .chevron, .mobile-menu-open .nav-label, .mobile-menu-open .nav-item > span:not(.nav-icon), .mobile-menu-open .help-card, .mobile-menu-open .profile-details, .mobile-menu-open .profile-more { display: initial; }.mobile-menu-open .organization-info, .mobile-menu-open .help-card, .mobile-menu-open .profile-details { display: flex; }.mobile-menu-open .nav-label { display: block; }.mobile-menu-open .nav-item > span:not(.nav-icon) { display: inline; }.mobile-menu-open .profile-more { display: block; }.mobile-menu-open .brand { padding-left: .8rem; padding-right: .8rem; }.mobile-menu-open .organization-switcher, .mobile-menu-open .nav-item, .mobile-menu-open .profile { justify-content: initial; padding-left: .65rem; padding-right: .65rem; }.mobile-menu-open .nav-count { display: inline; }.mobile-menu-open .profile { padding-top: .75rem; } }

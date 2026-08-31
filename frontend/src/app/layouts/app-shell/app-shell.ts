@@ -11,6 +11,16 @@ import { MatIconModule } from '@angular/material/icon';
 export class AppShell {
   protected readonly menuOpen = signal(false);
   protected readonly darkMode = signal(false);
+  protected readonly collapsed = signal(false);
+  protected readonly mobileOpen = signal(false);
+
+  protected toggleSidebar(): void {
+    this.collapsed.update((collapsed) => !collapsed);
+  }
+
+  protected toggleMobileMenu(): void {
+    this.mobileOpen.update((open) => !open);
+  }
 
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);

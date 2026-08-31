@@ -1,9 +1,12 @@
-<div class="shell" [class.dark-theme]="darkMode()">
+<div class="shell" [class.dark-theme]="darkMode()" [class.sidebar-collapsed]="collapsed()" [class.mobile-menu-open]="mobileOpen()">
   <aside class="sidebar">
+    <button class="collapse-button" type="button" (click)="toggleSidebar()" [attr.aria-label]="collapsed() ? 'Expandir menu' : 'Recolher menu'"><mat-icon aria-hidden="true">{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon></button>
+    <div class="brand-row">
     <a class="brand" routerLink="/inicio" aria-label="SPELS - início">
       <span class="brand-mark">S</span>
       <span class="brand-name">SPELS</span>
     </a>
+    </div>
 
     <div class="organization-switcher">
       <span class="organization-avatar">DA</span>
@@ -62,10 +65,11 @@
 
   <main class="content">
     <header class="topbar">
-      <button class="mobile-menu" type="button" aria-label="Abrir menu"><mat-icon aria-hidden="true">menu</mat-icon></button>
+      <button class="mobile-menu" type="button" (click)="toggleMobileMenu()" [attr.aria-label]="mobileOpen() ? 'Fechar menu' : 'Abrir menu'"><mat-icon aria-hidden="true">{{ mobileOpen() ? 'close' : 'menu' }}</mat-icon></button>
       <div class="breadcrumb"><span>Início</span><span class="breadcrumb-separator">/</span><strong>Visão geral</strong></div>
       <div class="topbar-actions"><button class="notification" type="button" aria-label="Notificações"><mat-icon aria-hidden="true">notifications_none</mat-icon><span></span></button><span class="topbar-avatar">AS</span></div>
     </header>
+    @if (mobileOpen()) { <button class="mobile-backdrop" type="button" aria-label="Fechar menu" (click)="toggleMobileMenu()"></button> }
     <section class="page-content">
       <router-outlet />
     </section>
