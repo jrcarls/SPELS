@@ -67,8 +67,25 @@
     <header class="topbar">
       <button class="mobile-menu" type="button" (click)="toggleMobileMenu()" [attr.aria-label]="mobileOpen() ? 'Fechar menu' : 'Abrir menu'"><mat-icon aria-hidden="true">{{ mobileOpen() ? 'close' : 'menu' }}</mat-icon></button>
       <div class="breadcrumb"><span>Início</span><span class="breadcrumb-separator">/</span><strong>Visão geral</strong></div>
-      <div class="topbar-actions"><button class="notification" type="button" aria-label="Notificações"><mat-icon aria-hidden="true">notifications_none</mat-icon><span></span></button><span class="topbar-avatar">AS</span></div>
+      <div class="topbar-actions"><button class="notification" type="button" aria-label="Notificações" [attr.aria-expanded]="notificationsOpen()" aria-controls="notification-drawer" (click)="toggleNotifications()"><mat-icon aria-hidden="true">notifications_none</mat-icon><span></span></button><span class="topbar-avatar">AS</span></div>
     </header>
+    @if (notificationsOpen()) {
+      <button class="notification-backdrop" type="button" aria-label="Fechar notificações" (click)="closeNotifications()"></button>
+      <aside class="notification-drawer" id="notification-drawer" aria-labelledby="notification-title" aria-modal="true" role="dialog" tabindex="-1">
+        <div class="notification-header">
+          <div>
+            <p class="notification-eyebrow">Central</p>
+            <h2 id="notification-title">Notificações</h2>
+          </div>
+          <button class="notification-close" type="button" aria-label="Fechar notificações" (click)="closeNotifications()"><mat-icon aria-hidden="true">close</mat-icon></button>
+        </div>
+        <div class="notification-empty" role="status">
+          <span class="notification-empty-icon"><mat-icon aria-hidden="true">notifications_none</mat-icon></span>
+          <h3>Nenhuma notificação por enquanto</h3>
+          <p>Em breve, você verá aqui as notificações importantes do sistema.</p>
+        </div>
+      </aside>
+    }
     @if (mobileOpen()) { <button class="mobile-backdrop" type="button" aria-label="Fechar menu" (click)="toggleMobileMenu()"></button> }
     <section class="page-content">
       <router-outlet />
