@@ -19,6 +19,21 @@ html {
   );
 }
 
+:root {
+  --spels-primary: #874d54;
+  --spels-primary-soft: #f9eeee;
+  --spels-page-background: #fbf9f7;
+  --spels-surface: #ffffff;
+  --spels-border: #eee8e4;
+  --spels-text: #332d2c;
+  --spels-text-secondary: #746865;
+  --spels-text-muted: #968783;
+  --spels-accent: #b66d6b;
+  --spels-success: #66836b;
+  --spels-warning: #a27b38;
+  --spels-shadow: 0 12px 30px rgba(74, 50, 46, .13);
+}
+
 body {
   // Default the application to a light color theme. This can be changed to
   // `dark` to enable the dark color theme, or to `light dark` to defer to the

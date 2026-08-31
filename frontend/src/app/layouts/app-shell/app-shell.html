@@ -1,0 +1,73 @@
+<div class="shell" [class.dark-theme]="darkMode()">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/inicio" aria-label="SPELS - início">
+      <span class="brand-mark">S</span>
+      <span class="brand-name">SPELS</span>
+    </a>
+
+    <div class="organization-switcher">
+      <span class="organization-avatar">DA</span>
+      <span class="organization-info"><strong>Doces da Ana</strong><small>Minha confeitaria</small></span>
+      <span class="chevron">⌄</span>
+    </div>
+
+    <nav class="main-nav" aria-label="Navegação principal">
+      <p class="nav-label">Visão geral</p>
+      <a class="nav-item" routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <mat-icon class="nav-icon" aria-hidden="true">home</mat-icon><span>Início</span>
+      </a>
+      <a class="nav-item" routerLink="/inicio" fragment="pedidos">
+        <mat-icon class="nav-icon" aria-hidden="true">receipt_long</mat-icon><span>Pedidos</span><span class="nav-count">4</span>
+      </a>
+      <a class="nav-item" routerLink="/inicio" fragment="clientes">
+        <mat-icon class="nav-icon" aria-hidden="true">group</mat-icon><span>Clientes</span>
+      </a>
+      <a class="nav-item" routerLink="/inicio" fragment="agenda">
+        <mat-icon class="nav-icon" aria-hidden="true">calendar_month</mat-icon><span>Agenda</span>
+      </a>
+
+      <p class="nav-label section-label">Gestão</p>
+      <a class="nav-item" routerLink="/inicio" fragment="produtos">
+        <mat-icon class="nav-icon" aria-hidden="true">cake</mat-icon><span>Produtos e receitas</span>
+      </a>
+      <a class="nav-item" routerLink="/inicio" fragment="financeiro">
+        <mat-icon class="nav-icon" aria-hidden="true">payments</mat-icon><span>Financeiro</span>
+      </a>
+      <a class="nav-item" routerLink="/inicio" fragment="relatorios">
+        <mat-icon class="nav-icon" aria-hidden="true">bar_chart</mat-icon><span>Relatórios</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a class="nav-item" routerLink="/inicio" fragment="configuracoes"><mat-icon class="nav-icon" aria-hidden="true">settings</mat-icon><span>Configurações</span></a>
+      <div class="help-card"><mat-icon class="help-icon" aria-hidden="true">help_outline</mat-icon><div><strong>Precisa de ajuda?</strong><small>Fale com nosso suporte</small></div></div>
+      <div class="profile-menu">
+        <button class="profile" type="button" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()" aria-haspopup="menu">
+          <span class="profile-avatar">AS</span><span class="profile-details"><strong>Ana Souza</strong><small>Minha conta</small></span><mat-icon class="profile-more" aria-hidden="true">more_horiz</mat-icon>
+        </button>
+        @if (menuOpen()) {
+          <div class="account-dropdown" role="menu">
+            <a class="dropdown-item" routerLink="/inicio" fragment="perfil" (click)="menuOpen.set(false)"><mat-icon aria-hidden="true">person_outline</mat-icon><span>Meu perfil</span></a>
+            <div class="dropdown-divider"></div>
+            <p class="dropdown-label">Aparência</p>
+            <button class="dropdown-item theme-option" type="button" [class.selected]="!darkMode()" (click)="setTheme(false)" role="menuitemradio" [attr.aria-checked]="!darkMode()"><mat-icon aria-hidden="true">light_mode</mat-icon><span>Modo claro</span>@if (!darkMode()) { <mat-icon class="selected-icon" aria-hidden="true">check</mat-icon> }</button>
+            <button class="dropdown-item theme-option" type="button" [class.selected]="darkMode()" (click)="setTheme(true)" role="menuitemradio" [attr.aria-checked]="darkMode()"><mat-icon aria-hidden="true">dark_mode</mat-icon><span>Modo escuro</span>@if (darkMode()) { <mat-icon class="selected-icon" aria-hidden="true">check</mat-icon> }</button>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item logout-item" routerLink="/login"><mat-icon aria-hidden="true">logout</mat-icon><span>Sair da conta</span></a>
+          </div>
+        }
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <button class="mobile-menu" type="button" aria-label="Abrir menu"><mat-icon aria-hidden="true">menu</mat-icon></button>
+      <div class="breadcrumb"><span>Início</span><span class="breadcrumb-separator">/</span><strong>Visão geral</strong></div>
+      <div class="topbar-actions"><button class="notification" type="button" aria-label="Notificações"><mat-icon aria-hidden="true">notifications_none</mat-icon><span></span></button><span class="topbar-avatar">AS</span></div>
+    </header>
+    <section class="page-content">
+      <router-outlet />
+    </section>
+  </main>
+</div>

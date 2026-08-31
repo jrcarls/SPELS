@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 export class Login {
   private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
   protected readonly passwordVisible = signal(false);
   protected readonly submitting = signal(false);
   protected readonly submitError = signal('');
@@ -38,7 +40,7 @@ export class Login {
     this.http.post('http://localhost:8080/auth/login', this.loginForm.getRawValue(), { withCredentials: true }).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.submitted.set(true);
+        this.router.navigate(['/inicio']);
       },
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
