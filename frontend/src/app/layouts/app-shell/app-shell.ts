@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthSession } from '../../features/auth/services/auth-session';
 
 @Component({
-  imports: [MatIconModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [MatIconModule, MatTooltipModule, RouterLink, RouterLinkActive, RouterOutlet],
   host: {
     '(document:keydown.escape)': 'closeNotifications()',
   },

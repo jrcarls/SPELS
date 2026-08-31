@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AuthSession } from '../../services/auth-session';
+import { AuthApi } from '../../data-access/auth-api';
 
 @Component({
   imports: [MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, ReactiveFormsModule, RouterLink],
@@ -17,7 +18,7 @@ import { AuthSession } from '../../services/auth-session';
 })
 export class Login {
   private readonly formBuilder = inject(NonNullableFormBuilder);
-  private readonly http = inject(HttpClient);
+  private readonly authApi = inject(AuthApi);
   private readonly router = inject(Router);
   private readonly authSession = inject(AuthSession);
   protected readonly passwordVisible = signal(false);
@@ -39,7 +40,7 @@ export class Login {
 
     this.submitting.set(true);
     this.submitError.set('');
-    this.http.post('http://localhost:8080/auth/login', this.loginForm.getRawValue(), { withCredentials: true }).subscribe({
+    this.authApi.login(this.loginForm.getRawValue()).subscribe({
       next: () => {
         this.submitting.set(false);
         this.authSession.markAuthenticated();

@@ -16,33 +16,36 @@
 
     <nav class="main-nav" aria-label="Navegação principal">
       <p class="nav-label">Visão geral</p>
-      <a class="nav-item" routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <a class="nav-item" routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" [matTooltip]="collapsed() ? 'Início' : ''" matTooltipPosition="right">
         <mat-icon class="nav-icon" aria-hidden="true">home</mat-icon><span>Início</span>
       </a>
-      <a class="nav-item" routerLink="/inicio" fragment="pedidos">
+      <a class="nav-item" routerLink="/inicio" fragment="pedidos" [matTooltip]="collapsed() ? 'Pedidos' : ''" matTooltipPosition="right">
         <mat-icon class="nav-icon" aria-hidden="true">receipt_long</mat-icon><span>Pedidos</span><span class="nav-count">4</span>
       </a>
-      <a class="nav-item" routerLink="/inicio" fragment="clientes">
+      <a class="nav-item" routerLink="/inicio" fragment="clientes" [matTooltip]="collapsed() ? 'Clientes' : ''" matTooltipPosition="right">
         <mat-icon class="nav-icon" aria-hidden="true">group</mat-icon><span>Clientes</span>
       </a>
-      <a class="nav-item" routerLink="/inicio" fragment="agenda">
+      <a class="nav-item" routerLink="/inicio" fragment="agenda" [matTooltip]="collapsed() ? 'Agenda' : ''" matTooltipPosition="right">
         <mat-icon class="nav-icon" aria-hidden="true">calendar_month</mat-icon><span>Agenda</span>
       </a>
 
       <p class="nav-label section-label">Gestão</p>
-      <a class="nav-item" routerLink="/inicio" fragment="produtos">
+      <a class="nav-item" routerLink="/inicio" fragment="produtos" [matTooltip]="collapsed() ? 'Produtos e receitas' : ''" matTooltipPosition="right">
         <mat-icon class="nav-icon" aria-hidden="true">cake</mat-icon><span>Produtos e receitas</span>
       </a>
-      <a class="nav-item" routerLink="/inicio" fragment="financeiro">
+      <a class="nav-item" routerLink="/inicio" fragment="insumos" [matTooltip]="collapsed() ? 'Insumos' : ''" matTooltipPosition="right">
+        <mat-icon class="nav-icon" aria-hidden="true">inventory_2</mat-icon><span>Insumos</span>
+      </a>
+      <a class="nav-item" routerLink="/inicio" fragment="financeiro" [matTooltip]="collapsed() ? 'Financeiro' : ''" matTooltipPosition="right">
         <mat-icon class="nav-icon" aria-hidden="true">payments</mat-icon><span>Financeiro</span>
       </a>
-      <a class="nav-item" routerLink="/inicio" fragment="relatorios">
+      <a class="nav-item" routerLink="/inicio" fragment="relatorios" [matTooltip]="collapsed() ? 'Relatórios' : ''" matTooltipPosition="right">
         <mat-icon class="nav-icon" aria-hidden="true">bar_chart</mat-icon><span>Relatórios</span>
       </a>
     </nav>
 
     <div class="sidebar-bottom">
-      <a class="nav-item" routerLink="/inicio" fragment="configuracoes"><mat-icon class="nav-icon" aria-hidden="true">settings</mat-icon><span>Configurações</span></a>
+      <a class="nav-item" routerLink="/inicio" fragment="configuracoes" [matTooltip]="collapsed() ? 'Configurações' : ''" matTooltipPosition="right"><mat-icon class="nav-icon" aria-hidden="true">settings</mat-icon><span>Configurações</span></a>
       <div class="help-card"><mat-icon class="help-icon" aria-hidden="true">help_outline</mat-icon><div><strong>Precisa de ajuda?</strong><small>Fale com nosso suporte</small></div></div>
       <div class="profile-menu">
         <button class="profile" type="button" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()" aria-haspopup="menu">

@@ -1,5 +1,5 @@
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { AuthApi } from '../../data-access/auth-api';
 
 @Component({
   imports: [MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, ReactiveFormsModule, RouterLink],
@@ -16,7 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class Register {
   private readonly formBuilder = inject(NonNullableFormBuilder);
-  private readonly http = inject(HttpClient);
+  private readonly authApi = inject(AuthApi);
   protected readonly passwordVisible = signal(false);
   protected readonly submitting = signal(false);
   protected readonly submitError = signal('');
@@ -42,13 +43,13 @@ export class Register {
     this.submitting.set(true);
     this.submitError.set('');
 
-    this.http.post('http://localhost:8080/auth/register', {
+    this.authApi.register({
       name,
       organizationName,
       cnpj: cnpj || null,
       email,
       password,
-    }, { withCredentials: true }).subscribe({
+    }).subscribe({
       next: () => {
         this.submitting.set(false);
         this.submitted.set(true);

@@ -16,6 +16,7 @@ export const routes: Routes = [
   {
     path: 'inicio',
     canActivate: [authGuard],
+    canActivateChild: [authGuard],
     title: 'Início | SPELS',
     loadComponent: () => import('./layouts/app-shell/app-shell').then((m) => m.AppShell),
     children: [
