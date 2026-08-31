@@ -12,6 +12,8 @@
       <p class="eyebrow">Bem-vinda de volta</p>
       <h2 id="login-title">Entre na sua confeitaria</h2>
       <p class="subtitle">Acesse sua operação e continue de onde parou.</p>
+      @if (submitted()) { <p class="form-success" role="status">Login realizado com sucesso.</p> }
+      @if (submitError()) { <p class="form-error" role="alert">{{ submitError() }}</p> }
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
         <mat-form-field appearance="outline">
           <mat-label>E-mail</mat-label>
@@ -25,7 +27,10 @@
           @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) { <mat-error>{{ errorMessage(loginForm.controls.password) }}</mat-error> }
         </mat-form-field>
         <div class="form-actions"><a href="#recuperar">Esqueci minha senha</a></div>
-        <button class="submit-button" mat-flat-button type="submit">Acessar minha conta <mat-icon aria-hidden="true">arrow_forward</mat-icon></button>
+        <button class="submit-button" mat-flat-button type="submit" [disabled]="submitting()">
+          {{ submitting() ? 'Entrando...' : 'Acessar minha conta' }}
+          <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+        </button>
       </form>
       <p class="switch-copy">Ainda não tem uma conta? <a routerLink="/cadastro">Criar conta grátis</a></p>
     </div>

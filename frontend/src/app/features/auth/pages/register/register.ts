@@ -1,4 +1,5 @@
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +16,11 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class Register {
   private readonly formBuilder = inject(NonNullableFormBuilder);
+  private readonly http = inject(HttpClient);
   protected readonly passwordVisible = signal(false);
+  protected readonly submitting = signal(false);
+  protected readonly submitError = signal('');
+  protected readonly submitted = signal(false);
   protected readonly registerForm = this.formBuilder.group({
     name: ['', Validators.required],
     organizationName: ['', Validators.required],
@@ -32,6 +37,27 @@ export class Register {
   protected onSubmit(): void {
     this.registerForm.markAllAsTouched();
     if (this.registerForm.invalid) return;
+
+    const { name, organizationName, cnpj, email, password } = this.registerForm.getRawValue();
+    this.submitting.set(true);
+    this.submitError.set('');
+
+    this.http.post('http://localhost:8080/auth/register', {
+      name,
+      organizationName,
+      cnpj: cnpj || null,
+      email,
+      password,
+    }, { withCredentials: true }).subscribe({
+      next: () => {
+        this.submitting.set(false);
+        this.submitted.set(true);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.submitting.set(false);
+        this.submitError.set(error.error?.message || 'Não foi possível criar sua conta. Tente novamente.');
+      },
+    });
   }
 
   protected errorMessage(control: AbstractControl): string {

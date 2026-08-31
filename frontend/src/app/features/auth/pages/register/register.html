@@ -12,6 +12,12 @@
       <p class="eyebrow">É bom ter você aqui</p>
       <h2 id="register-title">Crie sua conta SPELS</h2>
       <p class="subtitle">Comece a organizar sua confeitaria em poucos passos.</p>
+      @if (submitted()) {
+        <p class="form-success" role="status">Conta criada com sucesso! Você já pode acessar sua conta.</p>
+      }
+      @if (submitError()) {
+        <p class="form-error" role="alert">{{ submitError() }}</p>
+      }
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
         <mat-form-field appearance="outline">
           <mat-label>Seu nome</mat-label>
@@ -40,7 +46,10 @@
           @if (registerForm.controls.password.touched && registerForm.controls.password.invalid) { <mat-error>{{ errorMessage(registerForm.controls.password) }}</mat-error> }
         </mat-form-field>
         <mat-checkbox formControlName="terms">Eu concordo com os <a href="#termos">termos de uso</a> e a <a href="#privacidade">política de privacidade</a>.</mat-checkbox>
-        <button class="submit-button" mat-flat-button type="submit">Começar agora <mat-icon aria-hidden="true">arrow_forward</mat-icon></button>
+        <button class="submit-button" mat-flat-button type="submit" [disabled]="submitting() || submitted()">
+          {{ submitting() ? 'Criando conta...' : 'Começar agora' }}
+          <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+        </button>
       </form>
       <p class="switch-copy">Já tem uma conta? <a routerLink="/login">Acessar minha conta</a></p>
     </div>

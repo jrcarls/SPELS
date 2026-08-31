@@ -1,3 +1,4 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -14,7 +15,11 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class Login {
   private readonly formBuilder = inject(NonNullableFormBuilder);
+  private readonly http = inject(HttpClient);
   protected readonly passwordVisible = signal(false);
+  protected readonly submitting = signal(false);
+  protected readonly submitError = signal('');
+  protected readonly submitted = signal(false);
   protected readonly loginForm = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
@@ -27,6 +32,19 @@ export class Login {
   protected onSubmit(): void {
     this.loginForm.markAllAsTouched();
     if (this.loginForm.invalid) return;
+
+    this.submitting.set(true);
+    this.submitError.set('');
+    this.http.post('http://localhost:8080/auth/login', this.loginForm.getRawValue(), { withCredentials: true }).subscribe({
+      next: () => {
+        this.submitting.set(false);
+        this.submitted.set(true);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.submitting.set(false);
+        this.submitError.set(error.error?.message || 'E-mail ou senha inválidos.');
+      },
+    });
   }
 
   protected errorMessage(control: AbstractControl): string {
