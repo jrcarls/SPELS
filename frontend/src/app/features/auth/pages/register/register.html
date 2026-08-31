@@ -1,0 +1,39 @@
+<main class="auth-page">
+  <section class="auth-brand" aria-label="Sobre a SPELS">
+    <div class="brand-mark" aria-hidden="true">S</div>
+    <p class="eyebrow">Comece hoje</p>
+    <h1>Faça sua confeitaria<br /><em>crescer.</em></h1>
+    <p class="brand-copy">Tenha mais tempo para criar enquanto a SPELS cuida da organização do seu negócio.</p>
+    <div class="brand-detail" aria-hidden="true"><span></span><span></span><span></span></div>
+  </section>
+  <section class="auth-panel" aria-labelledby="register-title">
+    <div class="form-wrap">
+      <div class="mobile-brand" aria-hidden="true"><span class="brand-mark">S</span> SPELS</div>
+      <p class="eyebrow">É bom ter você aqui</p>
+      <h2 id="register-title">Crie sua conta SPELS</h2>
+      <p class="subtitle">Comece a organizar sua confeitaria em poucos passos.</p>
+      <form (submit)="$event.preventDefault(); onSubmit()" novalidate>
+        <mat-form-field appearance="outline">
+          <mat-label>Nome da sua confeitaria</mat-label>
+          <input matInput type="text" autocomplete="organization" placeholder="Ex.: Doces da Ana" [formField]="registerForm.name" />
+          @if (registerForm.name().touched() && registerForm.name().invalid()) { <mat-error>{{ registerForm.name().errors()[0]?.message }}</mat-error> }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Seu melhor e-mail</mat-label>
+          <input matInput type="email" autocomplete="email" placeholder="voce@exemplo.com" [formField]="registerForm.email" />
+          @if (registerForm.email().touched() && registerForm.email().invalid()) { <mat-error>{{ registerForm.email().errors()[0]?.message }}</mat-error> }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Crie uma senha</mat-label>
+          <input matInput [type]="passwordVisible() ? 'text' : 'password'" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" [formField]="registerForm.password" />
+          <button mat-icon-button matSuffix type="button" [attr.aria-label]="passwordVisible() ? 'Ocultar senha' : 'Mostrar senha'" (click)="togglePassword()"><mat-icon aria-hidden="true">{{ passwordVisible() ? 'visibility_off' : 'visibility' }}</mat-icon></button>
+          @if (registerForm.password().touched() && registerForm.password().invalid()) { <mat-error>{{ registerForm.password().errors()[0]?.message }}</mat-error> }
+        </mat-form-field>
+        <mat-checkbox [formField]="registerForm.terms">Eu concordo com os <a href="#termos">termos de uso</a> e a <a href="#privacidade">política de privacidade</a>.</mat-checkbox>
+        <button class="submit-button" mat-flat-button type="submit">Começar agora <mat-icon aria-hidden="true">arrow_forward</mat-icon></button>
+      </form>
+      <p class="switch-copy">Já tem uma conta? <a routerLink="/login">Acessar minha conta</a></p>
+    </div>
+    <p class="legal">© 2026 SPELS · Feito para sua confeitaria</p>
+  </section>
+</main>
