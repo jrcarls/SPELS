@@ -12,24 +12,34 @@
       <p class="eyebrow">É bom ter você aqui</p>
       <h2 id="register-title">Crie sua conta SPELS</h2>
       <p class="subtitle">Comece a organizar sua confeitaria em poucos passos.</p>
-      <form (submit)="$event.preventDefault(); onSubmit()" novalidate>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
+        <mat-form-field appearance="outline">
+          <mat-label>Seu nome</mat-label>
+          <input matInput type="text" autocomplete="name" placeholder="Ex.: Ana Souza" formControlName="name" />
+          @if (registerForm.controls.name.touched && registerForm.controls.name.invalid) { <mat-error>{{ errorMessage(registerForm.controls.name) }}</mat-error> }
+        </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Nome da sua confeitaria</mat-label>
-          <input matInput type="text" autocomplete="organization" placeholder="Ex.: Doces da Ana" [formField]="registerForm.name" />
-          @if (registerForm.name().touched() && registerForm.name().invalid()) { <mat-error>{{ registerForm.name().errors()[0]?.message }}</mat-error> }
+          <input matInput type="text" autocomplete="organization" placeholder="Ex.: Doces da Ana" formControlName="organizationName" />
+          @if (registerForm.controls.organizationName.touched && registerForm.controls.organizationName.invalid) { <mat-error>{{ errorMessage(registerForm.controls.organizationName) }}</mat-error> }
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>CNPJ <span class="optional-label">(opcional)</span></mat-label>
+          <input matInput type="text" autocomplete="off" placeholder="00.000.000/0000-00" formControlName="cnpj" />
+          @if (registerForm.controls.cnpj.touched && registerForm.controls.cnpj.invalid) { <mat-error>{{ errorMessage(registerForm.controls.cnpj) }}</mat-error> }
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Seu melhor e-mail</mat-label>
-          <input matInput type="email" autocomplete="email" placeholder="voce@exemplo.com" [formField]="registerForm.email" />
-          @if (registerForm.email().touched() && registerForm.email().invalid()) { <mat-error>{{ registerForm.email().errors()[0]?.message }}</mat-error> }
+          <input matInput type="email" autocomplete="email" placeholder="voce@exemplo.com" formControlName="email" />
+          @if (registerForm.controls.email.touched && registerForm.controls.email.invalid) { <mat-error>{{ errorMessage(registerForm.controls.email) }}</mat-error> }
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Crie uma senha</mat-label>
-          <input matInput [type]="passwordVisible() ? 'text' : 'password'" autocomplete="new-password" placeholder="Mínimo de 6 caracteres" [formField]="registerForm.password" />
+          <input matInput [type]="passwordVisible() ? 'text' : 'password'" autocomplete="new-password" placeholder="Mínimo de 8 caracteres" formControlName="password" />
           <button mat-icon-button matSuffix type="button" [attr.aria-label]="passwordVisible() ? 'Ocultar senha' : 'Mostrar senha'" (click)="togglePassword()"><mat-icon aria-hidden="true">{{ passwordVisible() ? 'visibility_off' : 'visibility' }}</mat-icon></button>
-          @if (registerForm.password().touched() && registerForm.password().invalid()) { <mat-error>{{ registerForm.password().errors()[0]?.message }}</mat-error> }
+          @if (registerForm.controls.password.touched && registerForm.controls.password.invalid) { <mat-error>{{ errorMessage(registerForm.controls.password) }}</mat-error> }
         </mat-form-field>
-        <mat-checkbox [formField]="registerForm.terms">Eu concordo com os <a href="#termos">termos de uso</a> e a <a href="#privacidade">política de privacidade</a>.</mat-checkbox>
+        <mat-checkbox formControlName="terms">Eu concordo com os <a href="#termos">termos de uso</a> e a <a href="#privacidade">política de privacidade</a>.</mat-checkbox>
         <button class="submit-button" mat-flat-button type="submit">Começar agora <mat-icon aria-hidden="true">arrow_forward</mat-icon></button>
       </form>
       <p class="switch-copy">Já tem uma conta? <a routerLink="/login">Acessar minha conta</a></p>

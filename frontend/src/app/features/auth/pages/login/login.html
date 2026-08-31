@@ -12,17 +12,17 @@
       <p class="eyebrow">Bem-vinda de volta</p>
       <h2 id="login-title">Entre na sua confeitaria</h2>
       <p class="subtitle">Acesse sua operação e continue de onde parou.</p>
-      <form (submit)="$event.preventDefault(); onSubmit()" novalidate>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
         <mat-form-field appearance="outline">
           <mat-label>E-mail</mat-label>
-          <input matInput type="email" autocomplete="email" placeholder="voce@exemplo.com" [formField]="loginForm.email" />
-          @if (loginForm.email().touched() && loginForm.email().invalid()) { <mat-error>{{ loginForm.email().errors()[0]?.message }}</mat-error> }
+          <input matInput type="email" autocomplete="email" placeholder="voce@exemplo.com" formControlName="email" />
+          @if (loginForm.controls.email.touched && loginForm.controls.email.invalid) { <mat-error>{{ errorMessage(loginForm.controls.email) }}</mat-error> }
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Senha</mat-label>
-          <input matInput [type]="passwordVisible() ? 'text' : 'password'" autocomplete="current-password" placeholder="Digite sua senha" [formField]="loginForm.password" />
+          <input matInput [type]="passwordVisible() ? 'text' : 'password'" autocomplete="current-password" placeholder="Digite sua senha" formControlName="password" />
           <button mat-icon-button matSuffix type="button" [attr.aria-label]="passwordVisible() ? 'Ocultar senha' : 'Mostrar senha'" (click)="togglePassword()"><mat-icon aria-hidden="true">{{ passwordVisible() ? 'visibility_off' : 'visibility' }}</mat-icon></button>
-          @if (loginForm.password().touched() && loginForm.password().invalid()) { <mat-error>{{ loginForm.password().errors()[0]?.message }}</mat-error> }
+          @if (loginForm.controls.password.touched && loginForm.controls.password.invalid) { <mat-error>{{ errorMessage(loginForm.controls.password) }}</mat-error> }
         </mat-form-field>
         <div class="form-actions"><a href="#recuperar">Esqueci minha senha</a></div>
         <button class="submit-button" mat-flat-button type="submit">Acessar minha conta <mat-icon aria-hidden="true">arrow_forward</mat-icon></button>

@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { email, form, FormField, minLength, required } from '@angular/forms/signals';
+import { Component, inject, signal } from '@angular/core';
+import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,19 +7,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  imports: [FormField, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, RouterLink],
+  imports: [MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, ReactiveFormsModule, RouterLink],
   selector: 'app-login',
   styleUrl: './login.scss',
   templateUrl: './login.html',
 })
 export class Login {
+  private readonly formBuilder = inject(NonNullableFormBuilder);
   protected readonly passwordVisible = signal(false);
-  protected readonly loginModel = signal({ email: '', password: '' });
-  protected readonly loginForm = form(this.loginModel, (path) => {
-    required(path.email, { message: 'Informe seu e-mail.' });
-    email(path.email, { message: 'Digite um e-mail válido.' });
-    required(path.password, { message: 'Informe sua senha.' });
-    minLength(path.password, 6, { message: 'A senha deve ter pelo menos 6 caracteres.' });
+  protected readonly loginForm = this.formBuilder.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
   protected togglePassword(): void {
@@ -27,6 +25,14 @@ export class Login {
   }
 
   protected onSubmit(): void {
-    if (this.loginForm().invalid()) return;
+    this.loginForm.markAllAsTouched();
+    if (this.loginForm.invalid) return;
+  }
+
+  protected errorMessage(control: AbstractControl): string {
+    if (control.hasError('required')) return 'Este campo é obrigatório.';
+    if (control.hasError('email')) return 'Digite um e-mail válido.';
+    if (control.hasError('minlength')) return 'A senha deve ter pelo menos 8 caracteres.';
+    return '';
   }
 }

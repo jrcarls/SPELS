@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { email, form, FormField, minLength, required } from '@angular/forms/signals';
+import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -8,21 +8,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({
-  imports: [FormField, MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, RouterLink],
+  imports: [MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, ReactiveFormsModule, RouterLink],
   selector: 'app-register',
   styleUrl: './register.scss',
   templateUrl: './register.html',
 })
 export class Register {
+  private readonly formBuilder = inject(NonNullableFormBuilder);
   protected readonly passwordVisible = signal(false);
-  protected readonly registerModel = signal({ name: '', email: '', password: '', terms: false });
-  protected readonly registerForm = form(this.registerModel, (path) => {
-    required(path.name, { message: 'Informe o nome da sua confeitaria.' });
-    required(path.email, { message: 'Informe seu e-mail.' });
-    email(path.email, { message: 'Digite um e-mail válido.' });
-    required(path.password, { message: 'Informe sua senha.' });
-    minLength(path.password, 6, { message: 'A senha deve ter pelo menos 6 caracteres.' });
-    required(path.terms, { message: 'Aceite os termos para continuar.' });
+  protected readonly registerForm = this.formBuilder.group({
+    name: ['', Validators.required],
+    organizationName: ['', Validators.required],
+    cnpj: ['', [Validators.maxLength(18), Validators.pattern(/^(?:[A-Za-z0-9]{14}|[A-Za-z0-9./-]{18})?$/)]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+    terms: [false, Validators.requiredTrue],
   });
 
   protected togglePassword(): void {
@@ -30,6 +30,17 @@ export class Register {
   }
 
   protected onSubmit(): void {
-    if (this.registerForm().invalid()) return;
+    this.registerForm.markAllAsTouched();
+    if (this.registerForm.invalid) return;
+  }
+
+  protected errorMessage(control: AbstractControl): string {
+    if (control.hasError('required')) return 'Este campo é obrigatório.';
+    if (control.hasError('requiredtrue')) return 'Aceite os termos para continuar.';
+    if (control.hasError('email')) return 'Digite um e-mail válido.';
+    if (control.hasError('minlength')) return 'A senha deve ter pelo menos 8 caracteres.';
+    if (control.hasError('maxlength')) return 'O CNPJ deve ter no máximo 18 caracteres.';
+    if (control.hasError('pattern')) return 'Informe um CNPJ válido.';
+    return '';
   }
 }

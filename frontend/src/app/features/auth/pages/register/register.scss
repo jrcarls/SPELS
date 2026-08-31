@@ -70,6 +70,7 @@ h2 { font-size: clamp(2rem, 4vw, 2.6rem); line-height: 1.1; color: var(--mat-sys
 .subtitle { margin: .8rem 0 2.4rem; color: var(--mat-sys-on-surface-variant); line-height: 1.5; }
 form { display: grid; gap: .3rem; }
 mat-form-field { width: 100%; margin-bottom: .25rem; }
+.optional-label { color: var(--mat-sys-on-surface-variant); font-size: .75em; }
 .form-actions { display: flex; justify-content: flex-end; margin: .1rem 0 1.2rem; }
 a { color: var(--mat-sys-primary); font-weight: 600; text-decoration: none; }
 a:hover { text-decoration: underline; }
