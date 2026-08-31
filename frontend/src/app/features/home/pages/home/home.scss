@@ -12,3 +12,19 @@
 }
 
 @media (max-width: 600px) { .home-cards { grid-template-columns: 1fr; } }
+
+:host-context(.dark-theme) .metric-card,
+:host-context(.dark-theme) .panel { border-color: #453937; background: #2c2524; }
+:host-context(.dark-theme) .welcome-row h1,
+:host-context(.dark-theme) .metric-card > strong,
+:host-context(.dark-theme) .panel-header h2,
+:host-context(.dark-theme) .order-info strong,
+:host-context(.dark-theme) .order-value,
+:host-context(.dark-theme) .agenda-day strong { color: #f4eeeb; }
+:host-context(.dark-theme) .order-row,
+:host-context(.dark-theme) .agenda-day,
+:host-context(.dark-theme) .agenda-link { border-color: #453937; }
+:host-context(.dark-theme) .panel-header p,
+:host-context(.dark-theme) .metric-card small,
+:host-context(.dark-theme) .order-info small,
+:host-context(.dark-theme) .agenda-day div small { color: #cbbdb8; }
