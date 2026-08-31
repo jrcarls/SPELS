@@ -56,7 +56,7 @@
             <button class="dropdown-item theme-option" type="button" [class.selected]="!darkMode()" (click)="setTheme(false)" role="menuitemradio" [attr.aria-checked]="!darkMode()"><mat-icon aria-hidden="true">light_mode</mat-icon><span>Modo claro</span>@if (!darkMode()) { <mat-icon class="selected-icon" aria-hidden="true">check</mat-icon> }</button>
             <button class="dropdown-item theme-option" type="button" [class.selected]="darkMode()" (click)="setTheme(true)" role="menuitemradio" [attr.aria-checked]="darkMode()"><mat-icon aria-hidden="true">dark_mode</mat-icon><span>Modo escuro</span>@if (darkMode()) { <mat-icon class="selected-icon" aria-hidden="true">check</mat-icon> }</button>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item logout-item" routerLink="/login"><mat-icon aria-hidden="true">logout</mat-icon><span>Sair da conta</span></a>
+            <a class="dropdown-item logout-item" routerLink="/login" (click)="logout()"><mat-icon aria-hidden="true">logout</mat-icon><span>Sair da conta</span></a>
           </div>
         }
       </div>

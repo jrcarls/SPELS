@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './features/auth/guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: '', pathMatch: 'full', redirectTo: 'inicio' },
   {
     path: 'login',
     title: 'Entrar | SPELS',
@@ -14,6 +15,7 @@ export const routes: Routes = [
   },
   {
     path: 'inicio',
+    canActivate: [authGuard],
     title: 'Início | SPELS',
     loadComponent: () => import('./layouts/app-shell/app-shell').then((m) => m.AppShell),
     children: [

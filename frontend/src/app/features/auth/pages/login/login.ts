@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { AuthSession } from '../../services/auth-session';
 
 @Component({
   imports: [MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, ReactiveFormsModule, RouterLink],
@@ -18,6 +19,7 @@ export class Login {
   private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly authSession = inject(AuthSession);
   protected readonly passwordVisible = signal(false);
   protected readonly submitting = signal(false);
   protected readonly submitError = signal('');
@@ -40,6 +42,7 @@ export class Login {
     this.http.post('http://localhost:8080/auth/login', this.loginForm.getRawValue(), { withCredentials: true }).subscribe({
       next: () => {
         this.submitting.set(false);
+        this.authSession.markAuthenticated();
         this.router.navigate(['/inicio']);
       },
       error: (error: HttpErrorResponse) => {

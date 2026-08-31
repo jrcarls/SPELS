@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthSession } from '../../features/auth/services/auth-session';
 
 @Component({
   imports: [MatIconModule, RouterLink, RouterLinkActive, RouterOutlet],
@@ -12,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './app-shell.html',
 })
 export class AppShell {
+  private readonly authSession = inject(AuthSession);
   protected readonly menuOpen = signal(false);
   protected readonly darkMode = signal(false);
   protected readonly collapsed = signal(false);
@@ -40,5 +42,9 @@ export class AppShell {
 
   protected setTheme(dark: boolean): void {
     this.darkMode.set(dark);
+  }
+
+  protected logout(): void {
+    this.authSession.clear();
   }
 }
